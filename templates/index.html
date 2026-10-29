@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <main class="card">
+        <div class="lock">🔐</div>
+
+        <h1>OTP Verification</h1>
+        <p class="subtitle">Generate and verify your OTP</p>
+
+        {% if message %}
+            <div class="message {{ message_type }}">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        {% if verified %}
+            <div class="verified-panel">
+                <div class="success-icon">✓</div>
+                <h2>Verification Successful!</h2>
+                <p>Your OTP has been verified.</p>
+            </div>
+
+            <form action="/generate" method="POST">
+                <button type="submit" class="generate">
+                    Generate New OTP
+                </button>
+            </form>
+
+        {% else %}
+
+            <div class="otp-display">
+                <p>GENERATED OTP</p>
+
+                <div class="otp-number">
+                    {% if otp %}
+                        {{ otp }}
+                    {% else %}
+                        ------
+                    {% endif %}
+                </div>
+
+                <p>
+                    {% if otp %}
+                        Valid for {{ remaining }} seconds
+                    {% else %}
+                        Click below to generate an OTP
+                    {% endif %}
+                </p>
+            </div>
+
+            <form action="/generate" method="POST">
+                <button type="submit" class="generate">
+                    Generate OTP
+                </button>
+            </form>
+
+            <form action="/verify" method="POST" class="verify-form">
+                <label for="otp-input">Enter your OTP</label>
+
+                <input
+                    type="text"
+                    id="otp-input"
+                    name="otp"
+                    placeholder="Enter 6-digit OTP"
+                    maxlength="6"
+                    pattern="[0-9]{6}"
+                    inputmode="numeric"
+                    required
+                    {% if not otp %}disabled{% endif %}
+                >
+
+                <button
+                    type="submit"
+                    class="verify"
+                    {% if not otp %}disabled{% endif %}
+                >
+                    Verify OTP
+                </button>
+            </form>
+
+        {% endif %}
+
+        <footer>Python + Flask OTP Verification</footer>
+    </main>
+
+</body>
+</html>
